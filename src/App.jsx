@@ -1,12 +1,13 @@
 import { useState } from "react";
 import axios from "axios";
 
-const HOST = "http://localhost:3000";
+const HOST = import.meta.env.VITE_HOST;
 
 function App() {
-  const [amount, setAmount] = useState(0);
+  const [amount, setAmount] = useState();
   const [couponCode, setCouponCode] = useState("");
-  const [couponValidation, setCouponValidation] = useState(null);
+  const [couponValidationResponse, setCouponValidationResponse] =
+    useState(null);
 
   const onApplyCoupon = async () => {
     let response;
@@ -20,13 +21,13 @@ function App() {
           },
         }
       );
-      setCouponValidation(response?.data);
+      setCouponValidationResponse(response?.data);
     } catch (err) {
       console.error(err);
     }
   };
 
-  console.log({ couponValidation });
+  console.log({ couponValidationResponse });
 
   return (
     <>
@@ -36,7 +37,7 @@ function App() {
         <input
           type="number"
           value={amount}
-          placeholder="Amount"
+          placeholder="Enter cart amount"
           min={0}
           onChange={(event) => {
             setAmount(event.target.value);
@@ -48,7 +49,7 @@ function App() {
         <input
           type="text"
           value={couponCode}
-          placeholder="Coupon Code"
+          placeholder="Enter coupon Code"
           onChange={(event) => {
             setCouponCode(event.target.value);
           }}
@@ -59,25 +60,23 @@ function App() {
           Apply Coupon
         </button>
       </div>
-      {couponValidation && (
+      {couponValidationResponse && (
         <div>
-          {couponValidation.isValid ? (
-            <p style={{ color: "green" }}>Coupon applied successfully</p>
-          ) : (
-            <p style={{ color: "red" }}>Invalid Coupon</p>
-          )}
-          {couponValidation.discount > 0 && (
+          {couponValidationResponse.isValid ? (
             <>
+              <p style={{ color: "green" }}>Coupon applied successfully</p>
               <span>
                 <strong>Discount Applied: </strong>
-                {couponValidation.discount}
+                {couponValidationResponse.discount}
               </span>
               <br />
               <span>
                 <strong>Final Amount: </strong>
-                {amount - couponValidation.discount}
+                {amount - couponValidationResponse.discount}
               </span>
             </>
+          ) : (
+            <p style={{ color: "red" }}>Invalid Coupon</p>
           )}
         </div>
       )}

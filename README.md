@@ -1,4 +1,4 @@
-# Coupon-Service-UI
+# Coupon Service UI
 
 This is the frontend service consuming the backend **coupon service**. You'll need latest version of node to run it.
 
